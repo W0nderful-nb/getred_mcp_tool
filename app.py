@@ -1,13 +1,15 @@
 from flask import Flask, request, jsonify
 from playwright.sync_api import sync_playwright
+import os
 
 app = Flask(__name__)
 
-@app.route('/search')
+@app.route('/search', methods=['POST'])
 def search():
-    keyword = request.args.get('keyword')
+    data = request.get_json()
+    keyword = data.get('keyword') if data else None
     if not keyword:
-        return jsonify({"error": "缺少关键词参数"}), 400
+        keyword = "美肤"  # ✅ 预设默认关键词
 
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=True)
@@ -16,9 +18,8 @@ def search():
         page.wait_for_timeout(5000)
 
         results = []
+        items = page.query_selector_all('div.note-item')  # ⚠️ 页面结构可能需要你实际调整
 
-        # 注意：页面结构可能需适配。这里只做结构示例
-        items = page.query_selector_all('div.note-item')
         for item in items[:5]:
             try:
                 title = item.query_selector('div.title').inner_text()
@@ -37,4 +38,5 @@ def search():
     return jsonify(results)
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=10000)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host='0.0.0.0', port=port)
