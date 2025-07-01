@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <title>小红书关键词搜索助手</title>
+  <style>
+    body { font-family: sans-serif; text-align: center; margin-top: 100px; }
+    input { padding: 10px; width: 300px; font-size: 16px; }
+    button { padding: 10px 20px; font-size: 16px; margin-left: 10px; }
+    p { margin-top: 30px; color: red; }
+  </style>
+</head>
+<body>
+  <h2>🔍 小红书关键词搜索助手</h2>
+  <input type="text" id="keyword" placeholder="请输入关键词">
+  <button onclick="search()">搜索</button>
+  <p>请确保你已登录网页版小红书：<a href="https://www.xiaohongshu.com" target="_blank">点击登录</a></p>
+
+  <script>
+    function search() {
+      const keyword = document.getElementById("keyword").value.trim();
+      if (!keyword) {
+        alert("请输入关键词！");
+        return;
+      }
+      const searchUrl = `https://www.xiaohongshu.com/search_result?keyword=${encodeURIComponent(keyword)}`;
+      window.open(searchUrl, '_blank');
+    }
+  </script>
+</body>
+</html>
